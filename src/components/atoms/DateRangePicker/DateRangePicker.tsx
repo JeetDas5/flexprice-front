@@ -12,7 +12,10 @@ import {
 	type DateTimezone,
 } from '@/utils/common/format_date';
 
-interface Props {
+/**
+ * Props for the DateRangePicker component.
+ */
+export interface DateRangePickerProps {
 	startDate?: Date;
 	endDate?: Date;
 	placeholder?: string;
@@ -28,6 +31,10 @@ interface Props {
 	popoverContentClassName?: string;
 }
 
+/**
+ * A date range picker component that allows users to select a start and end date.
+ * Supports timezone conversion, minimum/maximum dates, and customizable labels.
+ */
 const DateRangePicker = ({
 	startDate,
 	endDate,
@@ -42,7 +49,7 @@ const DateRangePicker = ({
 	popoverClassName,
 	popoverTriggerClassName,
 	popoverContentClassName,
-}: Props) => {
+}: DateRangePickerProps) => {
 	const [open, setOpen] = useState(false);
 	const [selectedRange, setSelectedRange] = useState<{ from: Date; to: Date } | undefined>(undefined);
 	const [timezone, setTimezone] = useState<CalendarTimezone>('local');

@@ -3,6 +3,10 @@ import * as TabsPrimitive from '@radix-ui/react-tabs';
 
 import { cn } from '@/lib/utils';
 
+/**
+ * A set of layered sections of content—known as tab panels—that are displayed one at a time.
+ * Built on top of Radix UI Tabs.
+ */
 const Tabs = TabsPrimitive.Root;
 
 const TabsList = React.forwardRef<React.ElementRef<typeof TabsPrimitive.List>, React.ComponentPropsWithoutRef<typeof TabsPrimitive.List>>(

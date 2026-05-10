@@ -1,10 +1,18 @@
 import React from 'react';
 
-interface SpinnerProps {
+/**
+ * Props for the Spinner component.
+ */
+export interface SpinnerProps {
+	/** The width and height of the spinner in pixels. Defaults to 24. */
 	size?: number;
+	/** Additional CSS classes to apply to the SVG element. */
 	className?: string;
 }
 
+/**
+ * A loading spinner component used to indicate background processing or loading states.
+ */
 const Spinner: React.FC<SpinnerProps> = ({ size = 24, className = '' }) => {
 	return (
 		<svg

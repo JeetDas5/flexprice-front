@@ -2,7 +2,11 @@ import { formatNumber } from '@/utils/common';
 import { getCurrencySymbol } from '@/utils/common/helper_functions';
 import { TrendingUp, TrendingDown } from 'lucide-react';
 
-interface MetricCardProps {
+/**
+ * Props for the MetricCard component.
+ */
+export interface MetricCardProps {
+	/** The title of the metric. */
 	title: string;
 	value: number;
 	currency?: string;
@@ -11,6 +15,10 @@ interface MetricCardProps {
 	isNegative?: boolean;
 }
 
+/**
+ * A card component used to display a key performance indicator (KPI) metric.
+ * Supports displaying currency, percentages, and trend indicators.
+ */
 const MetricCard: React.FC<MetricCardProps> = ({
 	title,
 	value,

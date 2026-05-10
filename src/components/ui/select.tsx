@@ -4,6 +4,10 @@ import { Check, ChevronDown, ChevronUp } from 'lucide-react';
 
 import { cn } from '@/lib/utils';
 
+/**
+ * Displays a list of options for the user to pick from—triggered by a button.
+ * Built on top of Radix UI Select.
+ */
 const Select = SelectPrimitive.Root;
 
 const SelectGroup = SelectPrimitive.Group;

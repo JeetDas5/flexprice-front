@@ -4,6 +4,9 @@ import { ChevronLeft, ChevronRight, MoreHorizontal } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { ButtonProps, buttonVariants } from '@/components/ui/button';
 
+/**
+ * Navigation component with page numbers and previous/next buttons.
+ */
 const Pagination = ({ className, ...props }: React.ComponentProps<'nav'>) => (
 	<nav role='navigation' aria-label='pagination' className={cn('mx-auto flex w-full justify-center', className)} {...props} />
 );
