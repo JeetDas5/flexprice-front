@@ -87,6 +87,9 @@ export interface InputProps extends Omit<React.InputHTMLAttributes<HTMLInputElem
 	size?: SizeVariant;
 }
 
+/*
+A input component used to take input from the user
+*/
 const Input = React.forwardRef<HTMLInputElement, InputProps>(
 	(
 		{
