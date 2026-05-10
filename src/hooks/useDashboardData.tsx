@@ -4,6 +4,8 @@ import DashboardApi from '@/api/DashboardApi';
 import { WindowSize } from '@/models';
 import { useEnvironment } from './useEnvironment';
 
+import { createQueryConfig, QUERY_PRESETS } from '@/utils/queryConfig';
+
 // Default values matching backend
 const DEFAULT_WINDOW_SIZE = WindowSize.MONTH;
 const DEFAULT_WINDOW_COUNT = 3;
@@ -26,8 +28,7 @@ export const useRecentSubscriptions = () => {
 				},
 			});
 		},
-		staleTime: 0, // No caching
-		gcTime: 0, // No garbage collection time
+		...createQueryConfig(QUERY_PRESETS.REALTIME),
 		refetchOnWindowFocus: true,
 		refetchOnMount: true,
 		enabled: !!environmentId, // Only run if environment ID exists
@@ -68,8 +69,7 @@ export const useRevenueData = () => {
 				},
 			});
 		},
-		staleTime: 0, // No caching
-		gcTime: 0, // No garbage collection time
+		...createQueryConfig(QUERY_PRESETS.REALTIME),
 		refetchOnWindowFocus: true,
 		refetchOnMount: true,
 		enabled: !!environmentId, // Only run if environment ID exists
@@ -121,8 +121,7 @@ export const useInvoiceIssues = () => {
 				},
 			});
 		},
-		staleTime: 0, // No caching
-		gcTime: 0, // No garbage collection time
+		...createQueryConfig(QUERY_PRESETS.REALTIME),
 		refetchOnWindowFocus: true,
 		refetchOnMount: true,
 		enabled: !!environmentId, // Only run if environment ID exists

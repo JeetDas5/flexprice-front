@@ -6,6 +6,8 @@ import type { Price } from '@/models/Price';
 import { DataType, FilterOperator } from '@/types/common/QueryBuilder';
 import { generateExpandQueryParams } from '@/utils/common/api_helper';
 
+import { createQueryConfig, QUERY_PRESETS } from '@/utils/queryConfig';
+
 /** Shared query key for plan prices so all consumers share the same cache. */
 export const PLAN_PRICES_QUERY_KEY = ['planPrices'] as const;
 
@@ -66,7 +68,6 @@ export function usePlanPrices(planId: string | undefined) {
 			return { ...response, items: filteredItems };
 		},
 		enabled: !!planId,
-		staleTime: 5 * 60 * 1000,
-		refetchOnWindowFocus: false,
+		...createQueryConfig(QUERY_PRESETS.STATIC),
 	});
 }
