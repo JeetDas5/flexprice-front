@@ -11,13 +11,22 @@ export interface DataTableProps<T> {
 	columns: ColumnData<T>[];
 	data: T[];
 	statusOptions?: { label: string; value: string }[];
+	virtualized?: boolean;
+	containerHeight?: number;
 }
 
 /**
  * A feature-rich DataTable component wired up to useFilterStore.
  * It handles search, status filtering, and date range selection with persistence.
  */
-export const DataTable = <T extends Record<string, any>>({ route, columns, data, statusOptions }: DataTableProps<T>) => {
+export const DataTable = <T extends Record<string, any>>({
+	route,
+	columns,
+	data,
+	statusOptions,
+	virtualized,
+	containerHeight,
+}: DataTableProps<T>) => {
 	const { filters, setFilter, resetFilters } = useFilterStore();
 	const activeFilters = filters[route] || {};
 
@@ -122,7 +131,7 @@ export const DataTable = <T extends Record<string, any>>({ route, columns, data,
 			</div>
 
 			<div className='bg-white rounded-lg'>
-				<FlexpriceTable columns={columns} data={filteredData} showEmptyRow />
+				<FlexpriceTable columns={columns} data={filteredData} showEmptyRow virtualized={virtualized} containerHeight={containerHeight} />
 				<div className='mt-2 text-xs text-gray-500 text-right px-2'>
 					Showing {filteredData.length} of {data.length} records
 				</div>

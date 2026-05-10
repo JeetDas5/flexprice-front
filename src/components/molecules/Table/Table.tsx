@@ -1,5 +1,6 @@
 import * as React from 'react';
-import { FC, ReactNode } from 'react';
+import { FC, ReactNode, useRef } from 'react';
+import { useVirtualizer } from '@tanstack/react-virtual';
 import { cn } from '@/lib/utils';
 
 // Types and Interfaces
@@ -39,6 +40,8 @@ export interface FlexpriceTableProps<T> {
 	variant?: 'default' | 'no-bordered';
 	/** Applied to the inner `<table>` (e.g. `table-fixed` for predictable column widths). */
 	tableClassName?: string;
+	virtualized?: boolean;
+	containerHeight?: number;
 }
 
 // Helper Functions
@@ -57,15 +60,17 @@ const isInteractiveElement = (element: HTMLElement | null): boolean => {
 };
 
 // Table structure components
-const Table = React.forwardRef<HTMLTableElement, React.HTMLAttributes<HTMLTableElement>>(({ className, ...props }, ref) => (
-	<div className='relative w-full overflow-auto'>
-		<table ref={ref} className={cn('w-full caption-bottom text-sm', className)} {...props} />
-	</div>
-));
+const Table = React.forwardRef<HTMLDivElement, React.HTMLAttributes<HTMLDivElement> & { tableClassName?: string; virtualized?: boolean }>(
+	({ className, tableClassName, children, virtualized, ...props }, ref) => (
+		<div ref={ref} className={cn('relative w-full overflow-auto', className)} {...props}>
+			<table className={cn('w-full caption-bottom text-sm', tableClassName)}>{children}</table>
+		</div>
+	),
+);
 Table.displayName = 'Table';
 
 const TableHeader = React.forwardRef<HTMLTableSectionElement, React.HTMLAttributes<HTMLTableSectionElement>>(
-	({ className, ...props }, ref) => <thead ref={ref} className={cn('[&_tr]:border-b', className)} {...props} />,
+	({ className, ...props }, ref) => <thead ref={ref} className={cn('[&_tr]:border-b sticky top-0 z-10 bg-white', className)} {...props} />,
 );
 TableHeader.displayName = 'TableHeader';
 
@@ -160,7 +165,21 @@ const FlexpriceTable: FC<FlexpriceTableProps<any>> = ({
 	hideBottomBorder = true,
 	variant = 'default',
 	tableClassName,
+	virtualized = false,
+	containerHeight = 400,
 }) => {
+	const parentRef = useRef<HTMLDivElement>(null);
+
+	const rowVirtualizer = useVirtualizer({
+		count: data.length,
+		getScrollElement: () => parentRef.current,
+		estimateSize: () => 45, // Estimated row height
+		overscan: 10,
+	});
+
+	const virtualRows = rowVirtualizer.getVirtualItems();
+	const totalSize = rowVirtualizer.getTotalSize();
+
 	const handleRowClick = (row: any, e: React.MouseEvent) => {
 		const target = e.target as HTMLElement;
 
@@ -216,11 +235,12 @@ const FlexpriceTable: FC<FlexpriceTableProps<any>> = ({
 		</TableHeader>
 	);
 
-	const renderTableRow = (row: any, rowIndex: number) => {
+	const renderTableRow = (row: any, rowIndex: number, ref?: React.Ref<HTMLTableRowElement>) => {
 		const lastRow = rowIndex === data.length - 1;
 
 		return (
 			<TableRow
+				ref={ref}
 				onClick={(e) => handleRowClick(row, e)}
 				className={cn(
 					'transition-colors hover:bg-muted/50',
@@ -294,12 +314,37 @@ const FlexpriceTable: FC<FlexpriceTableProps<any>> = ({
 				variant === 'default' && !hideBottomBorder && 'border-b border-[#E2E8F0]',
 				variant === 'no-bordered' && 'border-0',
 			)}>
-			<Table className={tableClassName}>
+			<Table
+				ref={parentRef}
+				tableClassName={tableClassName}
+				virtualized={virtualized}
+				style={virtualized ? { height: containerHeight, overflow: 'auto' } : undefined}>
 				{renderTableHeader()}
-				<TableBody>
-					{data.map((row, rowIndex) => renderTableRow(row, rowIndex))}
-					{renderEmptyRow()}
-				</TableBody>
+				{virtualized ? (
+					<TableBody>
+						{virtualRows[0]?.start > 0 && (
+							<tr>
+								<td colSpan={columns.length} style={{ height: virtualRows[0].start }} />
+							</tr>
+						)}
+						{virtualRows.map((virtualRow) => {
+							const row = data[virtualRow.index];
+							return (
+								<React.Fragment key={virtualRow.key}>{renderTableRow(row, virtualRow.index, rowVirtualizer.measureElement)}</React.Fragment>
+							);
+						})}
+						{totalSize - (virtualRows[virtualRows.length - 1]?.end ?? 0) > 0 && (
+							<tr>
+								<td colSpan={columns.length} style={{ height: totalSize - (virtualRows[virtualRows.length - 1]?.end ?? 0) }} />
+							</tr>
+						)}
+					</TableBody>
+				) : (
+					<TableBody>
+						{data.map((row, rowIndex) => renderTableRow(row, rowIndex))}
+						{renderEmptyRow()}
+					</TableBody>
+				)}
 			</Table>
 		</div>
 	);
