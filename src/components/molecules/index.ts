@@ -30,6 +30,7 @@ export { default as CustomerCostChart } from './CustomerCostChart';
 export { default as EventsMonitoringChart } from './EventsMonitoringChart';
 export { default as MetricCard } from './MetricCard';
 export { CostDataTable } from './CostDataTable';
+export { DataTable } from './DataTable/DataTable';
 
 // Dashboard Components
 export { DashboardControls, RecentSubscriptionsCard, RevenueTrendCard, InvoiceIssuesCard } from './Dashboard';
